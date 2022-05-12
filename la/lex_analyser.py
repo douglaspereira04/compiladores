@@ -7,20 +7,20 @@
 # numbers and +,-,*,/
 # ------------------------------------------------------------
 import ply.lex as lex
+import codecs
+from la.symbol_table import SymbolTable
 
-
-#Since token_regex list create a set of global functions to
-#define the regular expression for each token, 
-#an instance may affect other instance token regex with same name
-#Before using another instance, call LexicalAnalyser.destroy
+# Since token_regex list create a set of global functions to
+# define the regular expression for each token, 
+# an instance may affect other instance token regex with same name.
+# Before using another instance, call LexicalAnalyser.destroy().
+# This will delete created token functions, literals and ignored characters from global definitions,
+# preventing interaction with other instances.
 class LexicalAnalyser:
     def __init__(self):
         self.token_regex = []
         self.literals = None
-
-    # A string containing ignored characters (spaces and tabs)
-    global t_ignore
-    t_ignore  = ' \t'
+        self.ignore = None
 
     global t_newline
     global t_error
@@ -42,19 +42,28 @@ class LexicalAnalyser:
     def token_creator(self):
         global literals
         global tokens
+        global t_ignore
 
+        # Create literals and t_ignore variables in global scope
+        # For PLY Lexer purposes 
         if(self.literals != None):
             literals = self.literals
+        if(self.ignore != None):
+            t_ignore = self.ignore
 
         token_list = [token for (token, regex) in self.token_regex]
 
         tokens = tuple(token_list)
 
+        # Create t_TOKEN_NAME funcions in global scope
+        # For PLY Lexer purposes 
         for (token, regex)  in self.token_regex:
-            regex_func='def t_'+token+'(token):\n\tr\''+str(regex)+'\'\n\treturn token'
+            regex_func='def t_'+token+'(token):\n\tr\''+regex+'\'\n\treturn token'
             code=compile(regex_func,token,'exec')
             exec(code,globals())
 
+    # Analyse a string
+    # returning a Symbol Table
     def analysis(self, data):
 
         #create token list and funtions to be used by lexer
@@ -66,28 +75,39 @@ class LexicalAnalyser:
         # Give the lexer some input
         lexer.input(data)
 
+        symbol_table = SymbolTable()
         
         # Tokenize
         while True:
             tok = lexer.token()
             if not tok: 
                 break      # No more input 
-            print(tok)
+            symbol_table.add_token(tok)
 
-    #del global token list and remove token function namespaces
+        return symbol_table
+
+    # Deletes global token list, token functions, literals, and t_ignore
     def destroy(self):
         global tokens
+        global literals
+        global t_ignore
         for (token, regex)  in self.token_regex:
             del globals()["t_"+token]
+
         if 'tokens' in globals():
             del tokens
+        if 'literals' in globals():
+            del literals
+        if 't_ignore' in globals():
+            del t_ignore
 
-    #takes a line and separate into token name and regex string
+    # Takes a line and separate into token name and regex string
     def line_to_token_regex(line):
         (token_name, regex) = line.split(" ",1)
         return (token_name, regex) 
 
-    #takes a file and separate its multiple lines into token list entries
+    # Takes a file and separate its multiple lines into token list entries,
+    # Handles 
     def file_to_token_list(self, file_path):
         token_regex = []
 
@@ -100,16 +120,26 @@ class LexicalAnalyser:
 
         self.token_regex = token_regex
 
-        #get only the first "literals" line
+        # Find "literals" entry in file
         literals_filter = list(filter(lambda t: t[0] == "literals", token_regex))
-
+        # Remove from the token list, so a "literal" token is not created
         for lit in literals_filter:
             token_regex.remove(lit)
-
+        # Saves only the first "literals" line
         if(len(literals_filter) > 0):
             self.literals = literals_filter[0][1]
 
 
+        # Find "ignore" entry in file
+        ignore_filter = list(filter(lambda t: t[0] == "ignore", token_regex))
+        # Remove from the token list, so a "ignore" token is not created
+        for ign in ignore_filter:
+            token_regex.remove(ign)
+        # Saves only the first "ignore" line
+        if(len(ignore_filter) > 0):
+            self.ignore = ignore_filter[0][1]
+
+    #set token list from a tuple list
     def set_token_list(self, token_regex):
         self.destroy()
         self.token_regex = token_regex

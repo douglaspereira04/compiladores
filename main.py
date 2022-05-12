@@ -1,4 +1,5 @@
 from la.lex_analyser import LexicalAnalyser
+from tabulate.tabulate import tabulate
 import sys
 
 
@@ -9,26 +10,16 @@ def file_to_data(file_path):
     return data
 
 
-#first command line argument is tokens file path
-#second command line argument is path of file with code to be analysed
-
-#Token file takes tokens and regexes for each line
-#Each line must start with the token name, then a space character, and then the regex
-#There is also a special entry "literals", that takes single characters
-#Example    1:IDENT ident
-#           2:FLOAT_CONSTANT [0-9]+.\..[0-9]+
-#           3:RELOP (<|>|<=|>=|==)
-#           4:literals +-*\=<>:
-#
-#Every character in the "literals" line will be a separeted token
-
+# First command line argument is tokens file path
+# Second command line argument is path of file with code to be analysed
 if __name__ == "__main__":
-
     [_, token_file, data_file] = sys.argv
 
     data = file_to_data(data_file)
 
     la = LexicalAnalyser()
     la.from_file(token_file)
-    la.analysis(data)
+    symbol_table = la.analysis(data)
+
+    print(tabulate(tabular_data=symbol_table.table, headers=("TOKEN", "VALUE", "LINE", "POSITION"), tablefmt="fancy_grid"))
 

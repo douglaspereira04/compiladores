@@ -8,30 +8,38 @@
 # ------------------------------------------------------------
 import ply.lex as lex
 
-# List of token names.   This is always required
-tokens = (
-    'NUMBER',
-    'PLUS',
-    'MINUS',
-    'TIMES',
-    'DIVIDE',
-    'LPAREN',
-    'RPAREN',
-)
+tokens = None
 
-# Regular expression rules for simple tokens
-t_PLUS    = r'\+'
-t_MINUS   = r'-'
-t_TIMES   = r'\*'
-t_DIVIDE  = r'/'
-t_LPAREN  = r'\('
-t_RPAREN  = r'\)'
+#Token creator
+#PLY token precedence is in order of definition only for function definitions
+#I created this function to make easier to manage precedence for tokens that can be easily expressed with regex defitions
+def token_creator(token_regex):
+    global tokens
+    token_list = [token for (token, regex) in token_regex]
 
-# A regular expression rule with some action code
-def t_NUMBER(t):
-    r'\d+'
-    t.value = int(t.value)    
-    return t
+    tokens = tuple(token_list)
+
+    for (token, regex)  in token_regex:
+        regex_func='def t_'+token+'(token):\n\tr\''+str(regex)+'\'\n\treturn token'
+        code=compile(regex_func,token,'exec')
+        exec(code,globals())
+
+#List of tokens and regex
+token_regex = [
+    ("DEF",r'def'),
+    ("BREAK",r'break'),
+    ("IDENT",r'(([a-z]|[A-Z])+)'),
+    ("INT",r'[0-9]+'),
+    ("FLOAT",r'[0-9]+.\..[0-9]+'),
+    ("STRING",r'\".*\"'),
+    ("PLUS",r'-'),
+    ("MINUS",r'-'),
+    ("DIVIDE",r'-'),
+    ("RELOP",r'(<|>|<=|>=|==)')
+]
+
+#create token list and funtions to be used by lexer
+token_creator(token_regex)
 
 # Define a rule so we can track line numbers
 def t_newline(t):
@@ -52,18 +60,22 @@ lexer = lex.lex()
 
 # Test it out
 data = '''
-    3 + 4 * 10
+    def break jef agua "agua" agua 3 + 4 * 10
     + -20 *2
 '''
 
-# Give the lexer some input
-lexer.input(data)
+if __name__ == "__main__":
 
-# Tokenize
-while True:
-    tok = lexer.token()
-    if not tok: 
-        break      # No more input 
-    print(tok)
+
+    # Give the lexer some input
+    lexer.input(data)
+
+    
+    # Tokenize
+    while True:
+        tok = lexer.token()
+        if not tok: 
+            break      # No more input 
+        print(tok)
 
 

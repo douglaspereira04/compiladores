@@ -16,6 +16,8 @@ import ply.lex as lex
 class LexicalAnalyser:
     def __init__(self):
         self.token_regex = []
+        self.literals = None
+
     # A string containing ignored characters (spaces and tabs)
     global t_ignore
     t_ignore  = ' \t'
@@ -38,7 +40,12 @@ class LexicalAnalyser:
     #PLY token precedence is in order of definition only for function definitions
     #I created this function to make easier to manage precedence for tokens that can be easily expressed with regex defitions
     def token_creator(self):
+        global literals
         global tokens
+
+        if(self.literals != None):
+            literals = self.literals
+
         token_list = [token for (token, regex) in self.token_regex]
 
         tokens = tuple(token_list)
@@ -75,11 +82,13 @@ class LexicalAnalyser:
         if 'tokens' in globals():
             del tokens
 
+    #takes a line and separate into token name and regex string
     def line_to_token_regex(line):
-        (token_name, regex) = line.split(":")
+        (token_name, regex) = line.split(" ",1)
         return (token_name, regex) 
 
-    def file_to_token_list(file_path):
+    #takes a file and separate its multiple lines into token list entries
+    def file_to_token_list(self, file_path):
         token_regex = []
 
         f = open(file_path, "r")
@@ -88,12 +97,24 @@ class LexicalAnalyser:
         token_regex = [LexicalAnalyser.line_to_token_regex(token) for token in data]
 
         f.close()
-        return token_regex
+
+        self.token_regex = token_regex
+
+        #get only the first "literals" line
+        literals_filter = list(filter(lambda t: t[0] == "literals", token_regex))
+
+        for lit in literals_filter:
+            token_regex.remove(lit)
+
+        if(len(literals_filter) > 0):
+            self.literals = literals_filter[0][1]
+
 
     def set_token_list(self, token_regex):
         self.destroy()
         self.token_regex = token_regex
 
+    #load token definitions from file
     def from_file(self, file_path):
         self.destroy()
-        self.token_regex = LexicalAnalyser.file_to_token_list(file_path)
+        self.file_to_token_list(file_path)

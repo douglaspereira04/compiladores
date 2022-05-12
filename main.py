@@ -18,7 +18,12 @@ if __name__ == "__main__":
 
     la = LexicalAnalyser()
     la.from_file(token_file)
-    symbol_table = la.analysis(data)
+    la.input(data)
+    while True:
+        token = la.token()
+        if not token:
+            break #no more tokens
 
+    symbol_table = la.symbol_table
     print(symbol_table.to_string())
 

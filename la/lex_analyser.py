@@ -21,6 +21,8 @@ class LexicalAnalyser:
         self.token_regex = []
         self.literals = None
         self.ignore = None
+        self.symbol_table = None
+        self.lexer = None
 
     global t_newline
     global t_error
@@ -62,29 +64,27 @@ class LexicalAnalyser:
             code=compile(regex_func,token,'exec')
             exec(code,globals())
 
-    # Analyse a string
+    # Set string to analysed string
     # returning a Symbol Table
-    def analysis(self, data):
+    def input(self, data):
 
         #create token list and funtions to be used by lexer
         self.token_creator()
 
         # Build the lexer
-        lexer = lex.lex()
+        self.lexer = lex.lex()
 
         # Give the lexer some input
-        lexer.input(data)
+        self.lexer.input(data)
 
-        symbol_table = SymbolTable()
-        
-        # Tokenize
-        while True:
-            tok = lexer.token()
-            if not tok: 
-                break      # No more input 
-            symbol_table.add_token(tok)
+        self.symbol_table = SymbolTable()
 
-        return symbol_table
+    # Save token to symbol table and also return it
+    def token(self):
+        token = self.lexer.token()
+        if token: 
+            self.symbol_table.add_token(token)
+        return token
 
     # Deletes global token list, token functions, literals, and t_ignore
     def destroy(self):

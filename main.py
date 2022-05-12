@@ -1,5 +1,4 @@
 from la.lex_analyser import LexicalAnalyser
-from tabulate.tabulate import tabulate
 import sys
 
 
@@ -21,5 +20,5 @@ if __name__ == "__main__":
     la.from_file(token_file)
     symbol_table = la.analysis(data)
 
-    print(tabulate(tabular_data=symbol_table.table, headers=("TOKEN", "LEXEMA", "LINHA", "POSIÇÃO"), tablefmt="fancy_grid"))
+    print(symbol_table.to_string())
 

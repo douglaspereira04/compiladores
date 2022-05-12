@@ -1,3 +1,5 @@
+from tabulate.tabulate import tabulate
+
 # Holds a symbol table line
 class SymbolTableEntry:
     def __init__(self, token):
@@ -19,3 +21,6 @@ class SymbolTable:
 
     def __iter__(self):
     	return iter(self.table)
+
+    def to_string(self):
+    	return tabulate(tabular_data=self, headers=("TOKEN", "LEXEMA", "LINHA", "POSIÇÃO"), tablefmt="fancy_grid")

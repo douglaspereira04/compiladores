@@ -21,5 +21,5 @@ if __name__ == "__main__":
     la.from_file(token_file)
     symbol_table = la.analysis(data)
 
-    print(tabulate(tabular_data=symbol_table.table, headers=("TOKEN", "VALUE", "LINE", "POSITION"), tablefmt="fancy_grid"))
+    print(tabulate(tabular_data=symbol_table.table, headers=("TOKEN", "LEXEMA", "LINHA", "POSIÇÃO"), tablefmt="fancy_grid"))
 

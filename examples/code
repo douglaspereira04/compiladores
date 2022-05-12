@@ -1,2 +1,9 @@
-def break jef agua "agua" agua 3 + 4 * 10
-+ -20 *2 :
+def minha_funcao(param1,param2){
+	a = 1 *2 / 50 - 300 +12;
+	b = a < 50;
+	if(b && param1){
+		return (param1 || param2);
+	} else {
+		return true;
+	}
+}

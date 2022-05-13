@@ -43,7 +43,8 @@ if __name__ == "__main__":
     else:
         lexeme_table = la.lexeme_table
         if(output_path):
-            write_file(output_path,lexeme_table.to_string())
+            write_file(output_path,lexeme_table.to_string()+"\n"+lexeme_table.to_symbol_table_string())
         else:
             print(lexeme_table.to_string())
             print(lexeme_table.to_symbol_table_string())
+

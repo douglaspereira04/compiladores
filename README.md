@@ -14,6 +14,7 @@ Um terceiro argumento pode ser adicionado, "output", recebendo o caminho para o 
 - Há uma entrada especial "literals, que trata tokens que podem ser representados por um único caractere;
 - Todo caractere na definição de literals será um token do mesmo nome do caractere;
 - Há uma entrada especial "ignore", que trata dos caracteres que devem ser ignorardos.
+- Há também a entrada especial IDENT. Nela devem estar, separados por espaços, quais tokens serão guardados na tabela de símbolos.
 
 Exemplo de conteúdo de um arquivo de tokens:
 ```
@@ -23,14 +24,15 @@ IF if
 ELSE else
 TRUE true
 FALSE false
-STRING \"(\\.|[^\"])*\"
-FLOAT ([0-9])+.([0-9])+
-INT [0-9]+
-IDENT (_*)([a-z]|[A-Z]|_|[0-9])+
-RELOP (<|>|<=|>=|==)
+STRING ".*"
+FLOAT [\+-]?[0-9]+\.[0-9]+
+INT [\+-]?[0-9]+
+ID ([a-z]|[A-Z]|[0-9])+([a-z]|[A-Z]|_|[0-9])*
+relop <|>|<=|>=|==|!=
 BOOLOP (\|\||&&)
 literals +-*/=<>(){},;
-ignore   		
+ignore   	
+IDENT ID
 ```
 É importante notar que mesmo a entrada "ignore" aparentar vazia, a linha é composta por "ignore"(sendo o nome da entrada),"espaço"(sendo usado como separador entre nome da entrada e integrantes da entrada),"espaço"(sendo usado como integrante da entrada) e "tabulação".\
 **A aceitação dos tokens respeita uma ordem de precedência. Essa ordem é a mesma da definição do aquivo, exceto para a definição dos "literals", que independente de onde que foram inseridos no arquivo, estarão no final da ordem.**\
@@ -41,37 +43,39 @@ Qualquer texto dentro do arquivo será analisado.\
 Exemplo:
 ```
 def minha_funcao(param1,param2){
-	a = 1 *2 / 50 - 300 +12;
+	a = +1 * -2 / +-50 - 30.0 + 12;
 	b = a < 50;
+	print("mensagem")
 	if(b && param1){
 		return (param1 || param2);
 	} else {
 		return true;
 	}
 }
+
 ```
-A saída esperada é uma tabela de símbolos. As colunas são de token do lexema encontrado, lexema, linha do lexema e posição inicial do lexema. 
+A saída esperada são duas tabelas, uma com todos os lexemas encontrados, e uma com a tabela de simbolos.
 ```
 ╒═════════╤══════════════╤═════════╤═══════════╕
 │ TOKEN   │ LEXEMA       │   LINHA │   POSIÇÃO │
 ╞═════════╪══════════════╪═════════╪═══════════╡
 │ DEF     │ def          │       1 │         0 │
 ├─────────┼──────────────┼─────────┼───────────┤
-│ IDENT   │ minha_funcao │       1 │         4 │
+│ ID      │ minha_funcao │       1 │         4 │
 ├─────────┼──────────────┼─────────┼───────────┤
 │ (       │ (            │       1 │        16 │
 ├─────────┼──────────────┼─────────┼───────────┤
-│ IDENT   │ param1       │       1 │        17 │
+│ ID      │ param1       │       1 │        17 │
 ├─────────┼──────────────┼─────────┼───────────┤
 │ ,       │ ,            │       1 │        23 │
 ├─────────┼──────────────┼─────────┼───────────┤
-│ IDENT   │ param2       │       1 │        24 │
+│ ID      │ param2       │       1 │        24 │
 ├─────────┼──────────────┼─────────┼───────────┤
 │ )       │ )            │       1 │        30 │
 ├─────────┼──────────────┼─────────┼───────────┤
 │ {       │ {            │       1 │        31 │
 ├─────────┼──────────────┼─────────┼───────────┤
-│ IDENT   │ a            │       2 │        34 │
+│ ID      │ a            │       2 │        34 │
 ├─────────┼──────────────┼─────────┼───────────┤
 │ =       │ =            │       2 │        36 │
 ├─────────┼──────────────┼─────────┼───────────┤
@@ -97,19 +101,19 @@ A saída esperada é uma tabela de símbolos. As colunas são de token do lexema
 ├─────────┼──────────────┼─────────┼───────────┤
 │ ;       │ ;            │       2 │        64 │
 ├─────────┼──────────────┼─────────┼───────────┤
-│ IDENT   │ b            │       3 │        67 │
+│ ID      │ b            │       3 │        67 │
 ├─────────┼──────────────┼─────────┼───────────┤
 │ =       │ =            │       3 │        69 │
 ├─────────┼──────────────┼─────────┼───────────┤
-│ IDENT   │ a            │       3 │        71 │
+│ ID      │ a            │       3 │        71 │
 ├─────────┼──────────────┼─────────┼───────────┤
-│ RELOP   │ <            │       3 │        73 │
+│ relop   │ <            │       3 │        73 │
 ├─────────┼──────────────┼─────────┼───────────┤
 │ INT     │ 50           │       3 │        75 │
 ├─────────┼──────────────┼─────────┼───────────┤
 │ ;       │ ;            │       3 │        77 │
 ├─────────┼──────────────┼─────────┼───────────┤
-│ IDENT   │ print        │       4 │        80 │
+│ ID      │ print        │       4 │        80 │
 ├─────────┼──────────────┼─────────┼───────────┤
 │ (       │ (            │       4 │        85 │
 ├─────────┼──────────────┼─────────┼───────────┤
@@ -121,11 +125,11 @@ A saída esperada é uma tabela de símbolos. As colunas são de token do lexema
 ├─────────┼──────────────┼─────────┼───────────┤
 │ (       │ (            │       5 │       101 │
 ├─────────┼──────────────┼─────────┼───────────┤
-│ IDENT   │ b            │       5 │       102 │
+│ ID      │ b            │       5 │       102 │
 ├─────────┼──────────────┼─────────┼───────────┤
 │ BOOLOP  │ &&           │       5 │       104 │
 ├─────────┼──────────────┼─────────┼───────────┤
-│ IDENT   │ param1       │       5 │       107 │
+│ ID      │ param1       │       5 │       107 │
 ├─────────┼──────────────┼─────────┼───────────┤
 │ )       │ )            │       5 │       113 │
 ├─────────┼──────────────┼─────────┼───────────┤
@@ -135,11 +139,11 @@ A saída esperada é uma tabela de símbolos. As colunas são de token do lexema
 ├─────────┼──────────────┼─────────┼───────────┤
 │ (       │ (            │       6 │       125 │
 ├─────────┼──────────────┼─────────┼───────────┤
-│ IDENT   │ param1       │       6 │       126 │
+│ ID      │ param1       │       6 │       126 │
 ├─────────┼──────────────┼─────────┼───────────┤
 │ BOOLOP  │ ||           │       6 │       133 │
 ├─────────┼──────────────┼─────────┼───────────┤
-│ IDENT   │ param2       │       6 │       136 │
+│ ID      │ param2       │       6 │       136 │
 ├─────────┼──────────────┼─────────┼───────────┤
 │ )       │ )            │       6 │       142 │
 ├─────────┼──────────────┼─────────┼───────────┤
@@ -161,6 +165,21 @@ A saída esperada é uma tabela de símbolos. As colunas são de token do lexema
 ├─────────┼──────────────┼─────────┼───────────┤
 │ }       │ }            │      10 │       173 │
 ╘═════════╧══════════════╧═════════╧═══════════╛
+╒══════════════╤═══════════════════════════════╕
+│ LEXEMA       │ POSIÇÕES                      │
+╞══════════════╪═══════════════════════════════╡
+│ minha_funcao │ [(1, 4)]                      │
+├──────────────┼───────────────────────────────┤
+│ param1       │ [(1, 17), (5, 107), (6, 126)] │
+├──────────────┼───────────────────────────────┤
+│ param2       │ [(1, 24), (6, 136)]           │
+├──────────────┼───────────────────────────────┤
+│ a            │ [(2, 34), (3, 71)]            │
+├──────────────┼───────────────────────────────┤
+│ b            │ [(3, 67), (5, 102)]           │
+├──────────────┼───────────────────────────────┤
+│ print        │ [(4, 80)]                     │
+╘══════════════╧═══════════════════════════════╛
 
 ```
 No caso de uma entrada com um erro léxico, uma mensagem de erro aparecerá no terminal.\

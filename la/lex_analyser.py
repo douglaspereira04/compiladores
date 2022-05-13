@@ -32,6 +32,7 @@ class LexicalAnalyser:
         self.ignore = None
         self.lexeme_table = None
         self.lexer = None
+        self.ident = None
 
     global t_newline
     global t_error
@@ -85,7 +86,7 @@ class LexicalAnalyser:
         # Give the lexer some input
         self.lexer.input(data)
 
-        self.lexeme_table = LexemeTable()
+        self.lexeme_table = LexemeTable(self.ident)
 
     # Save token to symbol table and also return it
     def token(self):
@@ -142,6 +143,12 @@ class LexicalAnalyser:
         if(len(literals_filter) > 0):
             self.literals = literals_filter[0][1]
 
+        idents_filter = list(filter(lambda t: t[0] == "IDENT", token_regex))
+        # Remove from the token list, so a "IDENT" token is not created
+        for ident in idents_filter:
+            token_regex.remove(ident)
+
+        self.ident = idents_filter[0][1].split(" ")
 
         # Find "ignore" entry in file
         ignore_filter = list(filter(lambda t: t[0] == "ignore", token_regex))

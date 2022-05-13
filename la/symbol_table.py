@@ -14,8 +14,9 @@ class LexemeTableEntry:
 
 # Class of a symbol table
 class LexemeTable:
-    def __init__(self):
-    	self.table = []
+    def __init__(self, ident):
+        self.table = []
+        self.ident = ident
 
     def add_token(self, token_type, lexeme, lineno, lexpos):
         self.table.append(LexemeTableEntry(token_type, lexeme, lineno, lexpos))
@@ -30,23 +31,31 @@ class LexemeTable:
         symbol_table_dict = self.symbol_table_dict()
         symbol_table_tuple_list = []
 
-        for lexeme in symbol_table_dict:
-            symbol_table_tuple_list.append((lexeme,symbol_table_dict[lexeme]))
-        return tabulate(tabular_data=symbol_table_tuple_list, headers=("LEXEMA", "POSIÇÕES"), tablefmt="fancy_grid")
+        headers = None
+        if(len(self.ident) > 1):
+            for (token,lexeme) in symbol_table_dict:
+                symbol_table_tuple_list.append((token,lexeme,symbol_table_dict[(token,lexeme)]))
+                headers=("TOKEN","LEXEMA", "POSIÇÕES")
+        else:
+            for (token,lexeme) in symbol_table_dict:
+                symbol_table_tuple_list.append((lexeme,symbol_table_dict[(token,lexeme)]))
+                headers=("LEXEMA", "POSIÇÕES")
+
+        return tabulate(tabular_data=symbol_table_tuple_list, headers=headers, tablefmt="fancy_grid")
 
     def last(self):
         return self.table[len(self.table)-1]
 
     def symbol_table_dict(self):
 
-        idents = list(filter(lambda entry: entry.token == "IDENT", self.table))
+        idents = list(filter(lambda entry: entry.token in self.ident, self.table))
 
         symbol_table = dict()
 
         for ident in idents:
-            if ident.lexeme not in symbol_table:
-                symbol_table[ident.lexeme] = []
-            symbol_table[ident.lexeme].append((ident.line,ident.pos))
+            if (ident.token,ident.lexeme) not in symbol_table:
+                symbol_table[(ident.token,ident.lexeme)] = []
+            symbol_table[(ident.token,ident.lexeme)].append((ident.line,ident.pos))
 
         return symbol_table
 

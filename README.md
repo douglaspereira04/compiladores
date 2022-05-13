@@ -6,7 +6,7 @@ make clean venv
 make run token_file_path=my_token_file code_file_path=my_code_file
 ```
 No comando, "token_file_path" deve receber o caminho do arquivo com as definições dos tokens e "code_file_path" deve receber o caminho do arquivo com o código a ser analisado.\
-Um terceiro argumento pode ser adicionado, "output", recebendo o caminho para o arquivo de saída, onde será apresentada a tabela de símbolos. Se não definido o caminho, a tabela de símbolos é apresentada no terminal.
+Um terceiro argumento pode ser adicionado, "output_path", recebendo o caminho para o arquivo de saída, onde será apresentada a tabela de símbolos. Se não definido o caminho, a tabela de símbolos é apresentada no terminal.
 
 ## Arquivo de tokens
 - O arquivo de tokens deve ter em cada uma de suas linha a definição de um token;
@@ -55,6 +55,7 @@ def minha_funcao(param1,param2){
 
 ```
 A saída esperada são duas tabelas, uma com todos os lexemas encontrados, e uma com a tabela de simbolos.
+Caso mais de um token seja tratado pela tabela de síbolos, a saída dessa tabela também apresentará a coluna TOKEN.
 ```
 ╒═════════╤══════════════╤═════════╤═══════════╕
 │ TOKEN   │ LEXEMA       │   LINHA │   POSIÇÃO │

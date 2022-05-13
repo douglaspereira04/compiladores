@@ -8,7 +8,7 @@
 # ------------------------------------------------------------
 import ply.lex as lex
 import codecs
-from la.symbol_table import SymbolTable, SymbolTableEntry
+from la.symbol_table import LexemeTable, LexemeTableEntry
 
 
 
@@ -30,7 +30,7 @@ class LexicalAnalyser:
         self.token_regex = []
         self.literals = None
         self.ignore = None
-        self.symbol_table = None
+        self.lexeme_table = None
         self.lexer = None
 
     global t_newline
@@ -66,6 +66,7 @@ class LexicalAnalyser:
 
         # Create t_TOKEN_NAME funcions in global scope
         # For PLY Lexer purposes 
+
         for (token, regex)  in self.token_regex:
             regex_func='def t_'+token+'(token):\n\tr\''+regex+'\'\n\treturn token'
             code=compile(regex_func,token,'exec')
@@ -84,15 +85,15 @@ class LexicalAnalyser:
         # Give the lexer some input
         self.lexer.input(data)
 
-        self.symbol_table = SymbolTable()
+        self.lexeme_table = LexemeTable()
 
     # Save token to symbol table and also return it
     def token(self):
         try:
             token = self.lexer.token()
             if token: 
-                self.symbol_table.add_token(token.type, token.value, token.lineno, token.lexpos)
-                return self.symbol_table.last()
+                self.lexeme_table.add_token(token.type, token.value, token.lineno, token.lexpos)
+                return self.lexeme_table.last()
             else:
                 return None
         except Exception as e:

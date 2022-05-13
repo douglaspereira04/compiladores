@@ -41,9 +41,9 @@ if __name__ == "__main__":
     except LexicalException as e:
         print(e)
     else:
-        symbol_table = la.symbol_table
+        lexeme_table = la.lexeme_table
         if(output_path):
-            write_file(output_path,symbol_table.to_string())
+            write_file(output_path,lexeme_table.to_string())
         else:
-            print(symbol_table.to_string())
-
+            print(lexeme_table.to_string())
+            print(lexeme_table.to_symbol_table_string())

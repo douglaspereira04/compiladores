@@ -160,4 +160,8 @@ A saída esperada é uma tabela de símbolos. As colunas são de token do lexema
 ╘═════════╧══════════════╧═════════╧═══════════╛
 
 ```
-
+No caso de uma entrada com um erro léxico, uma mensagem de erro aparecerá no terminal.
+Exemplo:
+```
+Illegal character § at pos 78, line 3
+```

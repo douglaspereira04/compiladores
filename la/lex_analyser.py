@@ -73,6 +73,7 @@ class LexicalAnalyser:
 
     # Set string to analysed string
     # returning a Symbol Table
+    def input(self, data):
 
         #create token list and funtions to be used by lexer
         self.token_creator()
@@ -91,10 +92,11 @@ class LexicalAnalyser:
             token = self.lexer.token()
             if token: 
                 self.symbol_table.add_token(token.type, token.value, token.lineno, token.lexpos)
+                return self.symbol_table.last()
+            else:
+                return None
         except Exception as e:
             raise LexicalException(self.lexer.lexdata[self.lexer.lexpos],self.lexer.lineno, self.lexer.lexpos)
-        else:
-            return self.symbol_table.last()
 
     # Deletes global token list, token functions, literals, and t_ignore
     def destroy(self):

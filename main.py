@@ -2,7 +2,7 @@ from la.lex_analyser import LexicalAnalyser, LexicalException
 import sys
 
 
-def file_to_data(file_path):
+def read_file(file_path):
     f = open(file_path, "r")
     data = f.read() 
     f.close()
@@ -27,7 +27,7 @@ if __name__ == "__main__":
     else:
         [_, token_file, data_file, output_path] = sys.argv 
 
-    data = file_to_data(data_file)
+    data = read_file(data_file)
 
     la = LexicalAnalyser()
     la.from_file(token_file)

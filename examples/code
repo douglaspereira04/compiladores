@@ -1,6 +1,6 @@
 def minha_funcao(param1,param2){
 	a = +1 * -2 / +-50 - 30.0 + 12;
-	b = a < 50;
+	b = a < 50;§
 	print("mensagem")
 	if(b && param1){
 		return (param1 || param2);

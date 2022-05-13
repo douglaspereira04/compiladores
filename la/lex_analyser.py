@@ -8,7 +8,16 @@
 # ------------------------------------------------------------
 import ply.lex as lex
 import codecs
-from la.symbol_table import SymbolTable
+from la.symbol_table import SymbolTable, SymbolTableEntry
+
+
+
+class LexicalException(Exception):
+    def __init__(self, symbol, lineno, pos):
+        self.args = ("Illegal character "+symbol+" at pos "+str(pos)+", line "+str(lineno),)
+        self.symbol = symbol
+        self.line = lineno
+        self.pos = pos
 
 # Since token_regex list create a set of global functions to
 # define the regular expression for each token, 
@@ -34,9 +43,7 @@ class LexicalAnalyser:
 
     # Error handling rule
     def t_error(t):
-        print("Illegal character '%s'" % t.value[0])
-        t.lexer.skip(1)
-
+        pass
 
     #Token creator
     #PLY token precedence is in order of definition only for function definitions
@@ -66,7 +73,6 @@ class LexicalAnalyser:
 
     # Set string to analysed string
     # returning a Symbol Table
-    def input(self, data):
 
         #create token list and funtions to be used by lexer
         self.token_creator()
@@ -81,10 +87,14 @@ class LexicalAnalyser:
 
     # Save token to symbol table and also return it
     def token(self):
-        token = self.lexer.token()
-        if token: 
-            self.symbol_table.add_token(token)
-        return token
+        try:
+            token = self.lexer.token()
+            if token: 
+                self.symbol_table.add_token(token.type, token.value, token.lineno, token.lexpos)
+        except Exception as e:
+            raise LexicalException(self.lexer.lexdata[self.lexer.lexpos],self.lexer.lineno, self.lexer.lexpos)
+        else:
+            return self.symbol_table.last()
 
     # Deletes global token list, token functions, literals, and t_ignore
     def destroy(self):

@@ -5,6 +5,7 @@ O programa tem como entrada um arquivo de definição dos tokens e um arquivo de
 python3 main.py token_file_path code_file_path
 ```
 No comando, "token_file_path" é o caminho do arquivo com as definições dos tokens e "code_file_path" é o caminho do arquivo com o código a ser analisado.
+Um terceiro argumento pode ser adicionado. É o caminho para o arquivo de saída, onde é apresentada a tabela de símbolos. Se não definido o caminho, a tabela de símbolos é apresentada no terminal.
 
 ## Arquivo de tokens
 - O arquivo de tokens deve ter em cada uma de suas linha a definição de um token.

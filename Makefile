@@ -12,7 +12,7 @@ $(VENV)/bin/activate: requirements.txt
 venv: $(VENV)/bin/activate
 
 run: venv
-	./$(VENV)/bin/python3 main.py
+	./$(VENV)/bin/python3 main.py $(token_file_path) $(code_file_path)
 
 clean:
 	rm -rf $(VENV)

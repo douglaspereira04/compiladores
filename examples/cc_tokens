@@ -1,0 +1,19 @@
+def def
+int int
+float float
+string string
+break break
+print print
+read read
+return return
+if if
+else else
+for for
+new new
+relop <|>|<=|>=|==|!=
+string_constant ".*"
+float_constant [\+-]?[0-9]+\.[0-9]+
+int_constant [\+-]?[0-9]
+ident ([a-z]|[A-Z]|[0-9])+([a-z]|[A-Z]|_|[0-9])*
+literals (){};[]=+-*/%
+ignore  	

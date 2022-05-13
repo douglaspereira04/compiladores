@@ -3,10 +3,10 @@
 O programa tem como entrada um arquivo de definição dos tokens e um arquivo de código a ser analisado. Para executar o programa:
 ```
 make clean venv
-make run token_file_path=path code_file_path=other_path
+make run token_file_path=my_token_file code_file_path=my_code_file
 ```
-No comando, "token_file_path" é o caminho do arquivo com as definições dos tokens e "code_file_path" é o caminho do arquivo com o código a ser analisado.\
-Um terceiro argumento pode ser adicionado "output". É o caminho para o arquivo de saída, onde é apresentada a tabela de símbolos. Se não definido o caminho, a tabela de símbolos é apresentada no terminal.
+No comando, "token_file_path" deve receber o caminho do arquivo com as definições dos tokens e "code_file_path" deve receber o caminho do arquivo com o código a ser analisado.\
+Um terceiro argumento pode ser adicionado, "output", recebendo o caminho para o arquivo de saída, onde será apresentada a tabela de símbolos. Se não definido o caminho, a tabela de símbolos é apresentada no terminal.
 
 ## Arquivo de tokens
 - O arquivo de tokens deve ter em cada uma de suas linha a definição de um token;

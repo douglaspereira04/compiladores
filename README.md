@@ -4,14 +4,15 @@ O programa tem como entrada um arquivo de definição dos tokens e um arquivo de
 ```
 python3 main.py token_file_path code_file_path
 ```
-No comando, "token_file_path" é o caminho do arquivo com as definições dos tokens e "code_file_path" é o caminho do arquivo com o código a ser analisado.
+No comando, "token_file_path" é o caminho do arquivo com as definições dos tokens e "code_file_path" é o caminho do arquivo com o código a ser analisado.\
 Um terceiro argumento pode ser adicionado. É o caminho para o arquivo de saída, onde é apresentada a tabela de símbolos. Se não definido o caminho, a tabela de símbolos é apresentada no terminal.
 
 ## Arquivo de tokens
-- O arquivo de tokens deve ter em cada uma de suas linha a definição de um token.
-- A definição deve iniciar pelo nome do token, depois um caractere de espaço, e então a expressão regular correspondente.
-- Também há uma entrada especial "literals, que trata tokens que podem ser representados por um único caractere.
-- Todo caractere na definição de literals será um token do mesmo nome do caractere.
+- O arquivo de tokens deve ter em cada uma de suas linha a definição de um token;
+- A definição deve iniciar pelo nome do token, depois um caractere de espaço, e então a expressão regular correspondente;
+- Há uma entrada especial "literals, que trata tokens que podem ser representados por um único caractere;
+- Todo caractere na definição de literals será um token do mesmo nome do caractere;
+- Há uma entrada especial "ignore", que trata dos caracteres que devem ser ignorardos.
 
 Exemplo de conteúdo de um arquivo de tokens:
 ```
@@ -30,11 +31,12 @@ BOOLOP (\|\||&&)
 literals +-*/=<>(){},;
 ignore   		
 ```
-É importante notar que mesmo a entrada "ignore" aparentar vazia, a linha é composta por "ignore"(sendo o nome da entrada),"espaço"(sendo usado como separador entre nome da entrada e integrantes da entrada),"espaço"(sendo usado como integrante da entrada) e "tabulação".
-A aceitação dos tokens respeita uma ordem de precedência. Essa ordem é a mesma da definição do aquivo, exceto para a definição dos "literals", que independente de onde que foram inseridos no arquivo, estarão no final da ordem.
+É importante notar que mesmo a entrada "ignore" aparentar vazia, a linha é composta por "ignore"(sendo o nome da entrada),"espaço"(sendo usado como separador entre nome da entrada e integrantes da entrada),"espaço"(sendo usado como integrante da entrada) e "tabulação".\
+**A aceitação dos tokens respeita uma ordem de precedência. Essa ordem é a mesma da definição do aquivo, exceto para a definição dos "literals", que independente de onde que foram inseridos no arquivo, estarão no final da ordem.**\
+**O arquivo de texto deve ter aumenos um token não "literals".**
 
 ## Arquivo de código
-Qualquer texto dentro do arquivo será analisado.
+Qualquer texto dentro do arquivo será analisado.\
 Exemplo:
 ```
 def minha_funcao(param1,param2){
@@ -160,7 +162,7 @@ A saída esperada é uma tabela de símbolos. As colunas são de token do lexema
 ╘═════════╧══════════════╧═════════╧═══════════╛
 
 ```
-No caso de uma entrada com um erro léxico, uma mensagem de erro aparecerá no terminal.
+No caso de uma entrada com um erro léxico, uma mensagem de erro aparecerá no terminal.\
 Exemplo:
 ```
 Illegal character § at pos 78, line 3

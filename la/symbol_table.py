@@ -1,3 +1,5 @@
+# Douglas Pereira Luiz
+
 from texttable.texttable import Texttable
 
 # Holds a symbol table line

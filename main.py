@@ -1,3 +1,5 @@
+# Douglas Pereira Luiz
+
 from la.lex_analyser import LexicalAnalyser, LexicalException
 import sys
 

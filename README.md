@@ -13,14 +13,7 @@ make run token_file_path=my_token_file code_file_path=my_code_file
 No comando, "token_file_path" deve receber o caminho do arquivo com as definições dos tokens e "code_file_path" deve receber o caminho do arquivo com o código a ser analisado.\
 Um terceiro argumento pode ser adicionado, "output_path", recebendo o caminho para o arquivo de saída, onde será apresentada a tabela de símbolos. Se não definido o caminho, a tabela de símbolos é apresentada no terminal.
 
-Os exemplos se encontram no diretório examples. Para executar os programas de teste:
-```
-make run token_file_path=examples/cc_tokens code_file_path=examples/lcc_code_1.lcc output_path=out_1
-make run token_file_path=examples/cc_tokens code_file_path=examples/lcc_code_2.lcc output_path=out_2
-make run token_file_path=examples/cc_tokens code_file_path=examples/lcc_code_3.lcc output_path=out_3
-```
-A saídas estarão nos arquivos out_1, out_2 e out_3. Para melhor leitura, abra o texto em um visualizador sem quebra de texto ativada
-Caso queira que a saída seja no terminal (não fica boa), pode omitir o argumento output_path, como nos comandos a seguir:
+Os exemplos se encontram no diretório examples. Para executar o analisador sobre os códigos de teste:
 ```
 make run token_file_path=examples/cc_tokens code_file_path=examples/lcc_code_1.lcc
 make run token_file_path=examples/cc_tokens code_file_path=examples/lcc_code_2.lcc

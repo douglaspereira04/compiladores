@@ -1,7 +1,6 @@
-from tabulate.tabulate import tabulate
+from texttable.texttable import Texttable
 
 # Holds a symbol table line
-
 class LexemeTableEntry:
     def __init__(self, token_type, lexeme, lineno, lexpos):
     	self.token = token_type
@@ -25,23 +24,61 @@ class LexemeTable:
     	return iter(self.table)
 
     def to_string(self):
-        return tabulate(tabular_data=self, headers=("TOKEN", "LEXEMA", "LINHA", "POSIÇÃO"), tablefmt="fancy_grid")
+        table = Texttable()
+        rows = []
+        
+        rows.append(["TOKEN", "LEXEMA", "LINHA", "POSIÇÃO"])
+        for entry in self.table:
+                rows.append([entry.token, entry.lexeme, str(entry.line), str(entry.pos)])
+
+        table.add_rows(rows)
+
+        return table.draw()
 
     def to_symbol_table_string(self):
         symbol_table_dict = self.symbol_table_dict()
         symbol_table_tuple_list = []
 
         headers = None
-        if(len(self.ident) > 1):
-            for (token,lexeme) in symbol_table_dict:
-                symbol_table_tuple_list.append((token,lexeme,symbol_table_dict[(token,lexeme)]))
-                headers=("TOKEN","LEXEMA", "POSIÇÕES")
-        else:
-            for (token,lexeme) in symbol_table_dict:
-                symbol_table_tuple_list.append((lexeme,symbol_table_dict[(token,lexeme)]))
-                headers=("LEXEMA", "POSIÇÕES")
 
-        return tabulate(tabular_data=symbol_table_tuple_list, headers=headers, tablefmt="fancy_grid")
+        table = Texttable()
+        rows = []
+        if(len(self.ident) > 1):
+            rows.append(["TOKEN", "LEXEMA", "POSIÇÕES"])
+
+            for (token,lexeme) in symbol_table_dict:
+                amount = 0
+                posentry = ""
+                for pos in symbol_table_dict[(token,lexeme)]:
+                    posentry = posentry + str(pos) + ", "
+
+                    if(amount == 20):
+                        posentry = posentry +"\n"
+                        amount = 0
+                    else:
+                        amount = amount + 1
+
+                rows.append([token, lexeme, posentry])
+
+        else:
+            rows.append(["LEXEMA", "POSIÇÕES"])
+            for (token,lexeme) in symbol_table_dict:
+                amount = 0
+                posentry = ""
+                for pos in symbol_table_dict[(token,lexeme)]:
+                    posentry = posentry + str(pos) + ", "
+
+                    if(amount == 20):
+                        posentry = posentry +"\n"
+                        amount = 0
+                    else:
+                        amount = amount + 1
+
+                rows.append([lexeme, posentry])
+
+        table.add_rows(rows)
+
+        return table.draw()
 
     def last(self):
         return self.table[len(self.table)-1]

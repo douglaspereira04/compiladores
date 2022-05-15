@@ -1,5 +1,10 @@
 # Analisador Léxico
 
+Para executar o programa você precisa ter o Python 3.8 e o make instalados. Para instalar execute:
+```
+apt install python3.8 python3.8-venv make
+```
+
 O programa tem como entrada um arquivo de definição dos tokens e um arquivo de código a ser analisado. Para executar o programa:
 ```
 make clean venv
@@ -7,6 +12,20 @@ make run token_file_path=my_token_file code_file_path=my_code_file
 ```
 No comando, "token_file_path" deve receber o caminho do arquivo com as definições dos tokens e "code_file_path" deve receber o caminho do arquivo com o código a ser analisado.\
 Um terceiro argumento pode ser adicionado, "output_path", recebendo o caminho para o arquivo de saída, onde será apresentada a tabela de símbolos. Se não definido o caminho, a tabela de símbolos é apresentada no terminal.
+
+Os exemplos se encontram no diretório examples. Para executar os programas de teste:
+```
+make run token_file_path=examples/cc_tokens code_file_path=examples/lcc_code_1.lcc output_path=out_1
+make run token_file_path=examples/cc_tokens code_file_path=examples/lcc_code_2.lcc output_path=out_2
+make run token_file_path=examples/cc_tokens code_file_path=examples/lcc_code_3.lcc output_path=out_3
+```
+A saídas estarão nos arquivos out_1, out_2 e out_3. Para melhor leitura, abra o texto em um visualizador sem quebra de texto ativada
+Caso queira que a saída seja no terminal (não fica boa), pode omitir o argumento output_path, como nos comandos a seguir:
+```
+make run token_file_path=examples/cc_tokens code_file_path=examples/lcc_code_1.lcc
+make run token_file_path=examples/cc_tokens code_file_path=examples/lcc_code_2.lcc
+make run token_file_path=examples/cc_tokens code_file_path=examples/lcc_code_3.lcc
+```
 
 ## Arquivo de tokens
 - O arquivo de tokens deve ter em cada uma de suas linha a definição de um token;

@@ -1,0 +1,13 @@
+{ int a ; i = 0 ;
+a = 22; 
+int i; 
+
+while ( i < 47+ 232) {
+    a = a +31;
+};
+boolean k;
+k = false;
+if (a > 932){
+    k = true;
+};
+}

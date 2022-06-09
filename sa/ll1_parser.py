@@ -1,6 +1,12 @@
+from sa.node import Node
+from sa.production import Production, EPSILON
+from sa.ll1_parsing_result import LL1ParsingResult
 
-EPSILON = "&"
 
+"""
+set tha when you add it returns true 
+if there was not that item in the set
+"""
 class g_set(set):
 	def __init__(self):
 		super().__init__()
@@ -9,43 +15,6 @@ class g_set(set):
 		added = not (item in self)
 		super().add(item)
 		return added
-
-
-class Production():
-	def __init__(self, head, products):
-		self.head = head
-		self.products = products
-
-	def head(self):
-		return self.head
-
-	def products(self):
-		return self.products
-
-	def is_epsilon(self):
-		for p in self.products:
-			if(p == EPSILON):
-				return True
-		return False
-
-	def __str__(self):
-		return str(self.__key())
-
-	def __eq__(self, other):
-		if(isinstance(other, Production)):
-			return self.__key() == other.__key()
-		return NotImplemented
-
-	def __ne__(self, obj):
-		if(isinstance(other, Production)):
-			return self.__key() != other.__key()
-		return NotImplemented
-
-	def __key(self):
-		return (self.head, tuple(self.products))
-
-	def __hash__(self):
-		return hash(self.__key())
 
 
 class LL1Parser():
@@ -66,7 +35,7 @@ class LL1Parser():
 
 	def load_grammar(self):
 		self.alphabet = set()
-		self.non_terminals = set()
+		self.non_terminals = []
 		self.productions = []
 
 		lines = self.grammar.split("\n")
@@ -80,7 +49,7 @@ class LL1Parser():
 			tail = productions[1].split()
 
 			self.alphabet.add(head)
-			self.non_terminals.add(head)
+			self.non_terminals.append(head)
 
 			self.productions.append(Production(head, tail))
 			for symbol in tail:
@@ -88,7 +57,7 @@ class LL1Parser():
 					self.alphabet.add(symbol)
 
 
-		self.terminals = self.alphabet - self.non_terminals
+		self.terminals = self.alphabet - set(self.non_terminals)
 
 		self.first_pos = dict()
 		self.follow_pos = dict()
@@ -211,12 +180,72 @@ class LL1Parser():
 			products_firsts = self.collect_terminals_and_firsts(products)
 			for symbol in products_firsts:
 				if(symbol != EPSILON):
-					self.parsing_table[production.head][symbol].add(str(production))
+					self.parsing_table[production.head][symbol].add(production)
 				else:
 					follows = self.follow_pos[production.head]
 					for follow in follows:
-						self.parsing_table[production.head][follow].add(str(production))
+						self.parsing_table[production.head][follow].add(production)
 
 
 
 
+	def parse(self, symbol_list, max_steps):
+		result = LL1ParsingResult()
+
+		tree = Node("ROOT")
+
+
+		stack = ["$", self.non_terminals[0]]
+		parents = [tree]
+
+		i = 0
+		index = 0
+		while((i < max_steps) and (1 < len(stack))):
+			top = stack[-1]
+
+			symbol = None
+			try:
+				symbol = symbol_list[index] 
+			except Exception as e:
+				symbol = "$"
+
+			rule = None
+
+			if(top == symbol):
+
+				del stack[-1]
+				index +=1
+				Node(symbol, parents[-1])
+				del parents[-1]
+
+			elif(top in self.non_terminals):
+
+				top_node = Node(top, parents[-1])
+				del parents[-1]
+
+				rule = self.parsing_table[top][symbol]
+				if not rule:
+					break
+
+				del stack[-1]
+				products = list(reversed(list(rule)[0].products))
+
+				for product in products:
+					parents.append(top_node)
+
+				if(not(EPSILON in products)):
+					stack += products
+				else:
+					Node(EPSILON, parents[-1])
+					del parents[-1]
+
+			else:
+				break
+
+			result.add_entry(stack, symbol_list[index:], rule)
+
+			i+=1
+		result.tree = tree
+		result.check()
+
+		return result

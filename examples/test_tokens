@@ -1,6 +1,17 @@
-DEF def
-IF if
-ELSE else
-IDENT ([a-z]|[A-Z])([a-z]|[A-Z]|[0-9])*
+op \(
+cp \)
+ob {
+cb }
+semicolon ;
+while while
+if if
+do do
+boolean true|false
+atrop =|\+=|-=
+relop <|>|==|>=|<=
+sum \+|-
+type int|char|floar|boolean
+num [\+-]?[0-9]+(E[\+-]?[0-9]+)?
+id ([a-z]|[A-Z])([a-z]|[A-Z]|[0-9])*
 ignore  	
-ident IDENT
+IDENT id

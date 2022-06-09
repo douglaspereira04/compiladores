@@ -1,0 +1,21 @@
+PROGRAM -> ob COMANDOS cb
+COMANDOS -> COMANDO semicolon COMANDOS
+COMANDOS -> &
+COMANDO -> VAR
+COMANDO -> IF
+COMANDO -> WHILE
+COMANDO -> ATR
+VAR -> type id
+ATR -> id atrop EXPR
+EXPR -> EXPRVAL' EXPR'
+EXPR' -> sum EXPRVAL' EXPR'
+EXPR' -> &
+EXPRVAL' -> EXPRVAL
+EXPRVAL -> op EXPR cp
+EXPRVAL -> id
+EXPRVAL -> num
+EXPRVAL -> boolean
+RELEXPR -> EXPR relop EXPR
+IF -> if op RELEXPR cp ob COMANDOS cb
+WHILE -> while op RELEXPR cp ob COMANDOS cb
+DOWHILE -> do ob COMANDOS cb while op RELEXPR cp

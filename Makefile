@@ -9,7 +9,7 @@ venv:
 	python3.8 -m venv $(VENV)
 
 run: venv
-	./$(VENV)/bin/python3 main.py $(token_file_path) $(code_file_path) $(output_path)
+	./$(VENV)/bin/python3 main.py $(token_file_path) $(grammar_file_path) $(code_file_path) $(output_path)
 
 clean:
 	rm -rf $(VENV)

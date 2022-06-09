@@ -137,7 +137,7 @@ class LexicalAnalyser:
         if(len(literals_filter) > 0):
             self.literals = literals_filter[0][1]
 
-        idents_filter = list(filter(lambda t: t[0] == "ident", token_regex))
+        idents_filter = list(filter(lambda t: t[0] == "IDENT", token_regex))
         # Remove from the token list, so a "IDENT" token is not created
         for ident in idents_filter:
             token_regex.remove(ident)

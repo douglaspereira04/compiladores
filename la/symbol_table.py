@@ -98,4 +98,12 @@ class LexemeTable:
 
         return symbol_table
 
+    def get_token_list(self):
+        token_list = []
+
+        for entry in self.table:
+            token_list.append(entry.token)
+
+        return token_list
+
 

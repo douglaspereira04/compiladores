@@ -1,6 +1,7 @@
 # Douglas Pereira Luiz
 
 from la.lex_analyser import LexicalAnalyser, LexicalException
+from sa.ll1_parser import LL1Parser
 import sys
 
 
@@ -31,6 +32,7 @@ if __name__ == "__main__":
 
     data = read_file(data_file)
 
+    """
     la = LexicalAnalyser()
     la.from_file(token_file)
     la.input(data)
@@ -49,4 +51,28 @@ if __name__ == "__main__":
         else:
             print(lexeme_table.to_string())
             print(lexeme_table.to_symbol_table_string())
+    """
+
+    print(data)
+    ll1_parser = LL1Parser(data)
+    print("\n "+str(ll1_parser.alphabet))
+    print("\n "+str(ll1_parser.terminals))
+    print("\n "+str(ll1_parser.non_terminals))
+    print("\n")
+    print("first")
+    for i in ll1_parser.first_pos:
+        print(str(i) +"->"+str(list(ll1_parser.first_pos[i])))
+    print("\n")
+    print("follow")
+    for i in ll1_parser.follow_pos:
+        print(str(i) +"->"+str(list(ll1_parser.follow_pos[i])))
+    print("\n")
+    print("pa")
+    for i in ll1_parser.parsing_table:
+        for j in ll1_parser.parsing_table[i]:
+            print(str(i) + ", " +str(j) +"->"+str(list(ll1_parser.parsing_table[i][j])))
+
+
+
+
 

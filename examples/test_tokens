@@ -1,0 +1,6 @@
+DEF def
+IF if
+ELSE else
+IDENT ([a-z]|[A-Z])([a-z]|[A-Z]|[0-9])*
+ignore  	
+ident IDENT

@@ -1,135 +1,125 @@
-def calculadora(){
+def buscalinear ( int array, int capacidade, int valor, int posicaoencontrada) 
+{
+    int i;
+    
+    for(i = 0; i < capacidade; i = i + 1)
+    {
+        if (array[i] == valor)
+        {
+            posicaoencontrada = i;
+            return;
+        } endif
+    }
 
-	int num1;
-	int num2;
-	string op;
-	int result;
-
-	int opok;
-
-	int continue;
-	string continueinput;
-
-	continue = 1;
-
-	int i;
-	for (i = 0; continue == 1; i = 0){
-		
-		print "Calculadora:\n";
-
-		print "Entre com um valor\n:";
-		read num1;
-
-		opok = 1;
-		
-		int contafim;
-		contafim = 0;
-
-
-		for (i = 0; contafim != 0; i = 0){
-
-			print "Entre com um operador\n:";
-			read op;
-
-			print "Entre com o segundo valor\n:";
-			read num2;
-
-			if (op == "+"){
-				num1 = num1 + num2;
-
-			} else {
-				if (op == "-"){
-					result = num1 - num2;
-
-				} else {
-					if (op == "*"){
-						num1 = num1 * num2;
-
-					} else {
-						if (op == "/"){
-							num1 = num1 / num2;
-
-						} else {
-							if (op == "%"){
-								num1 = num1 % num2;
-
-							}  else {
-								if (op == "**"){
-									int j;
-									j = 0;
-									
-									if (num2 > 0){
-										for (j = 0; j < num2; i = i + 1){
-											num1 = num1 * num1;
-										}
-
-									} else {
-										if (num2 == 0){
-										num1 = 1;
-
-										} else {
-											opok = 0;
-											contafim = 1;
-										} endif
-									} endif
-
-								} else {
-									if (op == "="){
-										contafim = 1;
-
-									} else {
-										opok = 0;
-										contafim = 1;
-
-									} endif
-								} endif
-							} endif
-						} endif
-					} endif
-				} endif
-			} endif
-		}
-
-		if (opok == 1){
-
-			print num1;
-			print " ";
-			print op;
-			print " ";
-			print num2;	
-			print " = ";
-			print result;
-			print "\n";
-
-		} else {
-			print "Operação inválida!\n";
-
-		} endif
-
-		for (i = 0; 1; i = 0){
-
-			print "Fazer outro conta?(S\N)\n";
-			read continueinput;
-
-			if(continueinput == "S"){
-				continue = 1;
-				break;
-
-			} else if ( continueinput =="N"){
-				continue = 0;
-				break;
-
-			} else {
-				print "Valor inválido.\n";
-			} endif endif
-
-		}
-
-	}
+    posicaoencontrada = -1;
+    return;
 }
 
-def main(){
-	int calc;
-	calc = calculadora();
+def buscabinaria (int array, int x, int l, int r, int posicaoencontrada)
+{
+    int except;
 
+    if (r >= l) 
+    {
+        int mid;
+        mid = l + r;
+
+        if ( array[mid] == x )
+        {
+            posicaoencontrada = mid;
+            return;
+        }endif
+ 
+
+        if (array[mid] > x)
+        {   
+            r = mid - 1;
+
+            except = buscabinaria(array, x, l, r, posicaoencontrada);
+            return;
+
+        }endif
+
+        l = mid + 1;
+        except = buscabinaria(array, x, l, r, posicaoencontrada);
+
+        return;
+
+    }endif
+
+    osicaoencontrada = -1;
+    return; 
+
+}
+
+
+def buscaexp(int array, int capacidade, int x, int posicaoencontrada)
+{
+    int except;
+
+    if (array[0] == x)
+    {
+        posicaoencontrada = 0;
+        return;
+    }
+    endif
+
+    int i;
+    int l;
+    int r;
+    int cond1;
+    int cond2;
+    int cond;
+
+    cond1 = i < n;
+    cond2 = array[i] <= x;
+    cond = cond1 + cond2 == 2;
+    for (i = 1 ;  cond ; i = i * 2)
+    {
+        cond1 = i < n;
+        cond2 = array[i] <= x;
+        cond = cond1 + cond2 == 2;
+    }
+
+    l = i / 2;
+
+    if( i < n - 1 )
+    {
+        r = i;
+    } 
+    else
+    {
+        r = n - 1;
+    }
+    endif
+
+    except = buscabinaria(array, x, l, r, posicaoencontrada);
+    return;
+}
+
+
+def main(){
+    
+    int array[5];
+    array[0] = 7;
+    array[1] = 9;
+    array[2] = 41;
+    array[3] = -12;
+    array[4] = -54;
+    int capacidade;
+    capacidade = 5;
+    int posicaoencontrada;
+    int valor;
+
+    int except;
+
+    except = buscalinear(a, capacidade, valor, posicaoencontrada);
+
+    int l;
+    int r;
+    l = 0;
+    r = capacidade;
+    except = buscabinaria(array, valor, l, r, posicaoencontrada);
+
+    except = buscaexp(array, capacidade, valor, posicaoencontrada);
 }

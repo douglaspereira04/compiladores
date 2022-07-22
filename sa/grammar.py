@@ -6,6 +6,7 @@ class Grammar():
 		self.terminals = set()
 		self.non_terminals = []
 		self.productions = []
+		self.actions = dict()
 
 		lines = grammar.split("\n")
 
@@ -23,9 +24,15 @@ class Grammar():
 				self.non_terminals.append(head)
 
 			self.productions.append(Production(head, tail))
+			action = False
 			for symbol in tail:
-				if(symbol != EPSILON):
-					self.alphabet.add(symbol)
+				if(symbol == "§"):
+					action = not action
+				if(action):
+					pass
+				else:
+					if(symbol != EPSILON):
+						self.alphabet.add(symbol)
 
 
 		self.terminals = self.alphabet - set(self.non_terminals)

@@ -100,30 +100,32 @@ def main(){
 	nome[3] = "rafaela";
 	nome[4] = "douglas";
 	nome[5] = "fernanda";
+
+	int except;
 	
 	int i;
 	for (i = 0; i < 5; i = i + 1){
 		aux = nome[i];
-		nome[i] = empilhar(aux);
+		except = empilhar(aux);
 	}
 
-	aux = apresentaestadopilha();
+	except = apresentaestadopilha();
 
-	aux = desempilhar();
-	aux = desempilhar();
+	except = desempilhar();
+	except = desempilhar();
 	
 	aux = nome[4];
-	nome[4] = empilhar(aux);
+	except = empilhar(aux);
 	aux = nome[3];
-	nome[3] = empilhar(aux);
+	except = empilhar(aux);
 
-	aux = apresentaestadopilha();
+	except = apresentaestadopilha();
 
 	for (i = 0; i < 5; i = i + 1){
-		aux = desempilhar();
+		except = desempilhar();
 	}
 
-	aux = apresentaestadopilha();
+	except = apresentaestadopilha();
 
 }
 

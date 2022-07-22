@@ -1,8 +1,16 @@
 from sa.node import Node
-from sa.grammar import Grammar
 from sa.production import EPSILON
 from sa.ll1_parsing_result import LL1ParsingResult
 
+
+
+class SyntaxException(Exception):
+    def __init__(self, symbol, lineno, pos):
+                    print()
+        self.args = ("Unexpected symbol "+symbol+" at pos "+str(pos)+", line "+str(lineno),)
+        self.symbol = symbol
+        self.line = lineno
+        self.pos = pos
 
 """
 set tha when you add it returns true 
@@ -20,7 +28,7 @@ class g_set(set):
 
 class LL1Parser():
 	def __init__(self, grammar):
-		self.grammar = Grammar(grammar)
+		self.grammar = grammar
 
 		self.first_pos = dict()
 		self.follow_pos = dict()
@@ -41,6 +49,12 @@ class LL1Parser():
 		self.load_follow_pos()
 
 		self.load_parsing_table()
+
+
+		self.stack = ["$", self.grammar.non_terminals[0]]
+		self.result = LL1ParsingResult()
+		self.tree = Node("ROOT", None, None)
+		self.parents = [self.tree]
 
 
 	def load_first_pos(self):
@@ -165,66 +179,47 @@ class LL1Parser():
 
 
 
-	def parse(self, symbol_list, max_steps):
-		result = LL1ParsingResult()
+	def parse(self, token):
+		symbol = token.token
+		lexeme = token.lexeme
 
-		tree = Node("ROOT")
+		top = self.stack[-1]
+		rule = None
+		ok = True
 
+		if(top == symbol):
 
-		stack = ["$", self.grammar.non_terminals[0]]
-		parents = [tree]
+			del self.stack[-1]
+			Node(symbol, lexeme, self.parents[-1])
+			del self.parents[-1]
+			break
 
-		i = 0
-		index = 0
-		while((i < max_steps) and (1 < len(stack))):
-			top = stack[-1]
+		elif(top in self.grammar.non_terminals):
 
-			symbol = None
-			try:
-				symbol = symbol_list[index] 
-			except Exception as e:
-				symbol = "$"
+			top_node = Node(top, None, self.parents[-1])
+			del self.parents[-1]
 
-			rule = None
+			rule = self.parsing_table[top][symbol]
+			if not rule:
+				raise SyntaxException(token.token, token.line, token.pos)
 
-			if(top == symbol):
+			del self.stack[-1]
+			products = list(reversed(list(rule)[0].products))
 
-				del stack[-1]
-				index +=1
-				Node(symbol, parents[-1])
-				del parents[-1]
+			for product in products:
+				self.parents.append(top_node)
 
-			elif(top in self.grammar.non_terminals):
-
-				top_node = Node(top, parents[-1])
-				del parents[-1]
-
-				rule = self.parsing_table[top][symbol]
-				if not rule:
-					break
-
-				del stack[-1]
-				products = list(reversed(list(rule)[0].products))
-
-				for product in products:
-					parents.append(top_node)
-
-				if(not(EPSILON in products)):
-					stack += products
-				else:
-					Node(EPSILON, parents[-1])
-					del parents[-1]
-
+			if(not(EPSILON in products)):
+				self.stack += products
 			else:
-				break
+				Node(EPSILON, EPSILON, self.parents[-1])
+				del self.parents[-1]
 
-			result.add_entry(stack.copy(), symbol_list[index:], rule)
+		else:
+			return False
 
-			i+=1
-		result.tree = tree
-		result.check()
+		return True
 
-		return result
 
 
 

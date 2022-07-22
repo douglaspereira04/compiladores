@@ -34,7 +34,7 @@ class Production():
 		return not(self == other)
 
 	def __key(self):
-		return (self.head, tuple(self.products))
+		return (self.head, tuple(list(self.products)))
 
 	def __hash__(self):
 		return hash(self.__key())

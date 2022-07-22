@@ -10,11 +10,6 @@ O programa tem como entrada um arquivo de definição dos tokens e um arquivo de
 make clean venv
 make run code_file_path=my_code_file
 ```
-Para fazer somente a análise sintática, utilizando como entrada do programa diretamente os tokens, use:
-```
-make clean venv
-make run code_file_path=my_code_file sa=sa
-```
 
 Os exemplos se encontram no diretório examples. Para executar o analisador sobre os códigos de teste:
 ```

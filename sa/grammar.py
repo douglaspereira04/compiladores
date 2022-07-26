@@ -23,16 +23,37 @@ class Grammar():
 			if(not(head in self.non_terminals)):
 				self.non_terminals.append(head)
 
-			self.productions.append(Production(head, tail))
+
 			action = False
+			symbols_tail = list()
 			for symbol in tail:
 				if(symbol == "§"):
 					action = not action
+				if(not action and symbol != "§"):
+					symbols_tail.append(symbol)
+
+
+			production = Production(head, symbols_tail)
+			self.productions.append(production)
+
+			for symbol in symbols_tail:
+				if(symbol != EPSILON):
+					self.alphabet.add(symbol)
+
+			action = False
+			action_code = ""
+			i = 0
+			for symbol in tail:
+				if(symbol == "§"):
+					if(action):
+						production.add_action(i, action_code)
+					action = not action
+					action_code = ""
+
 				if(action):
-					pass
-				else:
-					if(symbol != EPSILON):
-						self.alphabet.add(symbol)
+					action_code =  action_code + symbol + " "
+				elif(symbol != "§"):
+					i+=1
 
 
 		self.terminals = self.alphabet - set(self.non_terminals)

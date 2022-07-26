@@ -4,6 +4,13 @@ class Production():
 	def __init__(self, head, products):
 		self.head = head
 		self.products = products
+		self.actions = dict()
+
+	def add_action(self, when, action_code):
+		self.actions[when] = action_code
+
+	def do_when(self, when):
+		return self.actions[when]
 
 	def head(self):
 		return self.head

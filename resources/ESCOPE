@@ -1,0 +1,6 @@
+PROGRAM -> § symbolTable = SymbolTable() § STATEMENT
+PROGRAM -> § symbolTable = SymbolTable() § FUNCLIST
+
+FUNCDEF -> def ident § symbolTable = SymbolTable(parent=symbolTable) § ( PARAMLIST ) { STATELIST } § symbolTable = symbolTable.parent §
+
+STATEMENT -> § symbolTable = SymbolTable(parent=symbolTable) § { STATELIST } § symbolTable = symbolTable.parent §

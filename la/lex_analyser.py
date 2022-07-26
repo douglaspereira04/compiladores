@@ -2,7 +2,7 @@
 
 import ply.lex as lex
 import codecs
-from la.symbol_table import LexemeTable, LexemeTableEntry
+from la.symbol_table import LexemeTable, Token
 
 
 

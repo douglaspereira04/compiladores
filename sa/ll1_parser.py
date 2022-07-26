@@ -6,7 +6,6 @@ from sa.ll1_parsing_result import LL1ParsingResult
 
 class SyntaxException(Exception):
     def __init__(self, symbol, lineno, pos):
-                    print()
         self.args = ("Unexpected symbol "+symbol+" at pos "+str(pos)+", line "+str(lineno),)
         self.symbol = symbol
         self.line = lineno
@@ -55,6 +54,8 @@ class LL1Parser():
 		self.result = LL1ParsingResult()
 		self.tree = Node("ROOT", None, None)
 		self.parents = [self.tree]
+		self.epsilon_in_products = False
+		self.global_variables = dict()
 
 
 	def load_first_pos(self):
@@ -187,16 +188,25 @@ class LL1Parser():
 		rule = None
 		ok = True
 
+		if(self.epsilon_in_products):
+			curr_node = Node(EPSILON, EPSILON, self.global_variables, self.parents[-1])
+			del self.parents[-1]
+			self.epsilon_in_products = False
+			return (True, curr_node)
+
 		if(top == symbol):
 
 			del self.stack[-1]
-			Node(symbol, lexeme, self.parents[-1])
+			curr_node = Node(symbol, lexeme, self.global_variables, self.parents[-1])
 			del self.parents[-1]
-			break
+			#deve dar break e retorna nodo
+			return (False, curr_node)
 
 		elif(top in self.grammar.non_terminals):
 
-			top_node = Node(top, None, self.parents[-1])
+			top_node = Node(top, None, self.global_variables, self.parents[-1])
+			curr_node = top_node
+			#retorna nodo
 			del self.parents[-1]
 
 			rule = self.parsing_table[top][symbol]
@@ -212,13 +222,14 @@ class LL1Parser():
 			if(not(EPSILON in products)):
 				self.stack += products
 			else:
-				Node(EPSILON, EPSILON, self.parents[-1])
-				del self.parents[-1]
+				self.epsilon_in_products = True
+
+			return (True, curr_node)
+
 
 		else:
-			return False
-
-		return True
+			#deve dar break
+			return (False, None)
 
 
 

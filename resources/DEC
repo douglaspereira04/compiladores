@@ -1,0 +1,5 @@
+FUNCDEF -> def ident § symbolTable.add_func(ident) § ( PARAMLIST ) { STATELIST }
+
+VARDECL -> int ident § symbolTable.add_int(ident) § INT_INDEX
+VARDECL -> float ident § symbolTable.add_float(ident) § INT_INDEX
+VARDECL -> string ident § symbolTable.add_string(ident) § INT_INDEX

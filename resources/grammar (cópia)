@@ -1,12 +1,12 @@
-PROGRAM -> § symbolTable = SymbolTable() § STATEMENT
-PROGRAM -> § symbolTable = SymbolTable() § FUNCLIST
+PROGRAM -> STATEMENT
+PROGRAM -> FUNCLIST
 PROGRAM -> &
 
 FUNCLIST -> FUNCDEF FUNCLIST'
 FUNCLIST' -> FUNCLIST
 FUNCLIST' -> &
 
-FUNCDEF -> def ident § symbolTable = SymbolTable(parent=symbolTable) § ( PARAMLIST ) { STATELIST } § symbolTable = symbolTable.parent §
+FUNCDEF -> def ident ( PARAMLIST ) { STATELIST }
 
 PARAMLIST -> &
 PARAMLIST -> TYPE ident PARAMLIST' 
@@ -23,7 +23,7 @@ STATEMENT -> READSTAT ;
 STATEMENT -> RETURNSTAT ;  
 STATEMENT -> IFSTAT
 STATEMENT -> FORSTAT 
-STATEMENT -> § symbolTable = SymbolTable(parent=symbolTable) § { STATELIST } § symbolTable = symbolTable.parent §
+STATEMENT -> { STATELIST } 
 STATEMENT -> break ;  
 STATEMENT -> ; 
 

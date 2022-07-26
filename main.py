@@ -1,6 +1,6 @@
 # Douglas Pereira Luiz
 
-from la.lex_analyser import LexicalAnalyser, LexicalException
+from la.lex_analyser import LexicalAnalyser, LexicalException, Token
 from sa.ll1_parser import LL1Parser, SyntaxException
 from sema.sema import SemanticAnalyser
 from sa.grammar import Grammar
@@ -56,6 +56,10 @@ def lasa(token_file, grammar_file, data_file, output_path):
     grammar_text = read_file(grammar_file)
     grammar_text = read_file(grammar_file)
     grammar = Grammar(grammar_text)
+    for production in grammar.productions:
+        print(str(production)+"----")
+        print(production.actions)
+
     la = LexicalAnalyser()
     la.from_file(token_file)
     la.input(data)
@@ -67,15 +71,16 @@ def lasa(token_file, grammar_file, data_file, output_path):
             if (not (token is None)):
 
                 i = 0
-                while((i < 1000000000) and (1 < len(self.stack))):
-                   result = ll1_parser.parse(token)
-                    if(not result):
+                while((i < 1000000000) and (1 < len(ll1_parser.stack))):
+                    (must_break, node) = ll1_parser.parse(token)
+                    #node is current node being visited in parsing tree
+
+                    if(not must_break):
                         break
-                    print(result)
 
                     i+=1
             else:
-                ll1_parser.parse("$", None, 1000000000)
+                ll1_parser.parse(Token("$","$",0,0))
                 print("ACCEPTED")
                 #ptree(ll1_parser.tree.children[0])
                 break #no more tokens

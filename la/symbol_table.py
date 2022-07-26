@@ -3,7 +3,7 @@
 from texttable.texttable import Texttable
 
 # Holds a symbol table line
-class LexemeTableEntry:
+class Token:
     def __init__(self, token_type, lexeme, lineno, lexpos):
     	self.token = token_type
     	self.lexeme = lexeme
@@ -20,7 +20,7 @@ class LexemeTable:
         self.ident = ident
 
     def add_token(self, token_type, lexeme, lineno, lexpos):
-        self.table.append(LexemeTableEntry(token_type, lexeme, lineno, lexpos))
+        self.table.append(Token(token_type, lexeme, lineno, lexpos))
 
     def __iter__(self):
     	return iter(self.table)

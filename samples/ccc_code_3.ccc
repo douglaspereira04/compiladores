@@ -35,13 +35,13 @@ def buscabinaria (int array, int x, int l, int r, int posicaoencontrada)
         {   
             r = mid - 1;
 
-            except = buscabinaria(array, x, l, r, posicaoencontrada);
+            except = invoke buscabinaria(array, x, l, r, posicaoencontrada);
             return;
 
         }endif
 
         l = mid + 1;
-        except = buscabinaria(array, x, l, r, posicaoencontrada);
+        except = invoke buscabinaria(array, x, l, r, posicaoencontrada);
 
         return;
 
@@ -56,6 +56,7 @@ def buscabinaria (int array, int x, int l, int r, int posicaoencontrada)
 def buscaexp(int array, int capacidade, int x, int posicaoencontrada)
 {
     int except;
+    int n;
 
     if (array[0] == x)
     {
@@ -93,7 +94,7 @@ def buscaexp(int array, int capacidade, int x, int posicaoencontrada)
     }
     endif
 
-    except = buscabinaria(array, x, l, r, posicaoencontrada);
+    except = invoke buscabinaria(array, x, l, r, posicaoencontrada);
     return;
 }
 
@@ -113,13 +114,13 @@ def main(){
 
     int except;
 
-    except = buscalinear(a, capacidade, valor, posicaoencontrada);
+    except = invoke buscalinear(a, capacidade, valor, posicaoencontrada);
 
     int l;
     int r;
     l = 0;
     r = capacidade;
-    except = buscabinaria(array, valor, l, r, posicaoencontrada);
+    except = invoke buscabinaria(array, valor, l, r, posicaoencontrada);
 
-    except = buscaexp(array, capacidade, valor, posicaoencontrada);
+    except = invoke buscaexp(array, capacidade, valor, posicaoencontrada);
 }

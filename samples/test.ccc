@@ -1,0 +1,9 @@
+def funcao(){
+    
+    int b;
+    int a[2][3+2];
+    int ca;
+    ca = 12 + a[2];
+
+    b = a[2][3] + ca *  1 >  2 * (4  + 3 * b ) );
+}

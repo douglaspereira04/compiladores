@@ -1,6 +1,6 @@
 
 def estavazia (int vazia){
-
+   int topo;
    if(topo == -1 ){
       vazia = 1;
       return;
@@ -14,7 +14,8 @@ def estavazia (int vazia){
 
 
 def estacheia (int cheia){
-
+   	int topo;
+   	int capacity;
     if (topo == capacity - 1){
 
         cheia = 1;
@@ -29,14 +30,14 @@ def estacheia (int cheia){
 }
 
 def empilhar (string valor){
-
+   	int topo;
 	topo = topo + 1;
 	elements[topo] = valor;
 
 }
 
 def desempilhar (string valor){
-
+   	int topo;
     string aux;
 
     aux = elements[topo];
@@ -55,14 +56,14 @@ def retornatopo (string topo){
 
 def apresentaestadopilha(){
 	int cheia;
-	cheia = estacheia(cheia);
+	cheia = invoke estacheia(cheia);
 	if(cheia == 1){
 
 		print "pilha cheia\n";
 
 	} else {
 		int vazia;
-		vazia = estavazia(vazia);
+		vazia = invoke estavazia(vazia);
 		if(vazia == 1){
 
 			print "pilha vazia\n";
@@ -106,26 +107,26 @@ def main(){
 	int i;
 	for (i = 0; i < 5; i = i + 1){
 		aux = nome[i];
-		except = empilhar(aux);
+		except = invoke empilhar(aux);
 	}
 
-	except = apresentaestadopilha();
+	except = invoke apresentaestadopilha();
 
-	except = desempilhar();
-	except = desempilhar();
+	except = invoke desempilhar();
+	except = invoke desempilhar();
 	
 	aux = nome[4];
-	except = empilhar(aux);
+	except = invoke empilhar(aux);
 	aux = nome[3];
-	except = empilhar(aux);
+	except = invoke empilhar(aux);
 
-	except = apresentaestadopilha();
+	except = invoke apresentaestadopilha();
 
 	for (i = 0; i < 5; i = i + 1){
-		except = desempilhar();
+		except = invoke desempilhar();
 	}
 
-	except = apresentaestadopilha();
+	except = invoke apresentaestadopilha();
 
 }
 

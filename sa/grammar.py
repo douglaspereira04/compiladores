@@ -49,10 +49,11 @@ class Grammar():
 						production.add_action(i, action_code)
 					action = not action
 					action_code = ""
+				elif(action):
+					symbol = symbol.strip()
+					action_code =  action_code + symbol +" "
 
-				if(action):
-					action_code =  action_code + symbol + " "
-				elif(symbol != "§"):
+				else:
 					i+=1
 
 

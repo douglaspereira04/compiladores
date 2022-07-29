@@ -1,6 +1,7 @@
 from sa.node import Node
 from sa.production import EPSILON
 from sa.ll1_parsing_result import LL1ParsingResult
+from la.lex_analyser import Token
 
 
 
@@ -52,7 +53,7 @@ class LL1Parser():
 
 		self.stack = ["$", self.grammar.non_terminals[0]]
 		self.result = LL1ParsingResult()
-		self.tree = Node("ROOT", None, None)
+		self.tree = Node("ROOT", None, None, None, None, None)
 		self.parents = [self.tree]
 		self.epsilon_in_products = False
 		self.global_variables = dict()
@@ -68,7 +69,7 @@ class LL1Parser():
 			for production in self.grammar.productions:
 
 				if (production.is_epsilon()):
-					collected =  collected or self.first_pos[production.head].add(EPSILON)
+					collected =  collected or self.first_pos[production.head()].add(EPSILON)
 				else:
 					collected = collected or self.collect_firsts(production)
 
@@ -77,8 +78,8 @@ class LL1Parser():
 	return true otherwise
 	"""
 	def collect_firsts(self, production):
-		products = production.products
-		firsts = self.first_pos[production.head]
+		products = production.products()
+		firsts = self.first_pos[production.head()]
 
 		added = False
 
@@ -112,16 +113,16 @@ class LL1Parser():
 
 			first_production = True
 			for production in self.grammar.productions:
-				head = production.head
+				head = production.head()
 				if(first_production):
 					collected = collected or self.follow_pos[head].add("$")
 					first_production = False
 
-				for i in range(0,len(production.products)):
-					symbol = production.products[i]
+				for i in range(0,len(production.products())):
+					symbol = production.products()[i]
 
 					if symbol in self.grammar.non_terminals:
-						after_symbols = production.products[i+1:]
+						after_symbols = production.products()[i+1:]
 						after_firsts = self.collect_terminals_and_firsts(after_symbols)
 
 						for first in after_firsts:
@@ -164,23 +165,23 @@ class LL1Parser():
 	def load_parsing_table(self):
 
 		for production in self.grammar.productions:
-			products = production.products.copy()
+			products = production.products().copy()
 			if(EPSILON in products):
 				products.remove(EPSILON)
 
 			products_firsts = self.collect_terminals_and_firsts(products)
 			for symbol in products_firsts:
 				if(symbol != EPSILON):
-					self.parsing_table[production.head][symbol].add(production)
+					self.parsing_table[production.head()][symbol].add(production)
 				else:
-					follows = self.follow_pos[production.head]
+					follows = self.follow_pos[production.head()]
 					for follow in follows:
-						self.parsing_table[production.head][follow].add(production)
+						self.parsing_table[production.head()][follow].add(production)
 
 
 
 
-	def parse(self, token):
+	def parse(self, token = Token("$","$",0,0)):
 		symbol = token.token
 		lexeme = token.lexeme
 
@@ -188,33 +189,31 @@ class LL1Parser():
 		rule = None
 		ok = True
 
+
 		if(self.epsilon_in_products):
-			curr_node = Node(EPSILON, EPSILON, self.global_variables, self.parents[-1])
+			curr_node = Node(EPSILON, EPSILON, self.parents[-1], self.parents[-1].derives(), None, True)
 			del self.parents[-1]
 			self.epsilon_in_products = False
-			return (True, curr_node)
-
-		if(top == symbol):
-
-			del self.stack[-1]
-			curr_node = Node(symbol, lexeme, self.global_variables, self.parents[-1])
-			del self.parents[-1]
-			#deve dar break e retorna nodo
 			return (False, curr_node)
 
-		elif(top in self.grammar.non_terminals):
+		if(top == symbol):
+			del self.stack[-1]
+			curr_node = Node(symbol, lexeme, self.parents[-1], self.parents[-1].derives(), None, True, token.line, token.pos)
+			del self.parents[-1]
+			#deve dar break e retorna nodo
+			return (True, curr_node)
 
-			top_node = Node(top, None, self.global_variables, self.parents[-1])
+		elif(top in self.grammar.non_terminals):
+			rule = self.parsing_table[top][symbol]
+			if not rule:
+				raise SyntaxException(token.token, token.line, token.pos)
+			top_node = Node(top, None, self.parents[-1], self.parents[-1].derives(), list(rule)[0], False)
 			curr_node = top_node
 			#retorna nodo
 			del self.parents[-1]
 
-			rule = self.parsing_table[top][symbol]
-			if not rule:
-				raise SyntaxException(token.token, token.line, token.pos)
-
 			del self.stack[-1]
-			products = list(reversed(list(rule)[0].products))
+			products = list(reversed(list(rule)[0].products()))
 
 			for product in products:
 				self.parents.append(top_node)
@@ -224,12 +223,12 @@ class LL1Parser():
 			else:
 				self.epsilon_in_products = True
 
-			return (True, curr_node)
+			return (False, curr_node)
 
 
 		else:
 			#deve dar break
-			return (False, None)
+			return (True, None)
 
 
 

@@ -2,31 +2,34 @@ EPSILON = "&"
 
 class Production():
 	def __init__(self, head, products):
-		self.head = head
-		self.products = products
-		self.actions = dict()
+		self._head = head
+		self._products = products
+		self._actions = dict()
 
 	def add_action(self, when, action_code):
-		self.actions[when] = action_code
+		self._actions[when] = action_code
 
 	def do_when(self, when):
-		return self.actions[when]
+		if(when in self._actions.keys()):
+			return self._actions[when]
+		else:
+			return None
 
 	def head(self):
-		return self.head
+		return self._head
 
 	def products(self):
-		return self.products
+		return self._products
 
 	def is_epsilon(self):
 
-		if(len(self.products) == 1):
-			if(self.products[0] == EPSILON):
+		if(len(self._products) == 1):
+			if(self._products[0] == EPSILON):
 				return True
 		return False
 
 	def is_direct_left_recursive(self):
-		return self.products[0] == self.head
+		return self._products[0] == self._head
 
 	def __str__(self):
 		return str(self.__key())
@@ -41,13 +44,13 @@ class Production():
 		return not(self == other)
 
 	def __key(self):
-		return (self.head, tuple(list(self.products)))
+		return (self._head, tuple(list(self._products)))
 
 	def __hash__(self):
 		return hash(self.__key())
 
 	def __str__(self):
-		string = self.head + " ->"
-		for product in self.products:
+		string = self._head + " ->"
+		for product in self._products:
 			string += " "+product
 		return string

@@ -50,43 +50,58 @@ def ptree(tree, indent_width=1):
     print(tree.symbol())
     _ptree(tree, tree, tree)
 
+def p_symbol_tables(symbol_tables):
+    if(not symbol_tables.is_empty()):
+        print("\n"+symbol_tables.to_text())
+    for child in symbol_tables.children:
+        p_symbol_tables(child)
+
 def lasa(token_file, grammar_file, data_file, output_path):
+    MAX = 1000000
     data = read_file(data_file)
 
     grammar_text = read_file(grammar_file)
     grammar_text = read_file(grammar_file)
-    grammar = Grammar(grammar_text)
-    for production in grammar.productions:
-        print(str(production)+"----")
-        print(production.actions)
 
-    la = LexicalAnalyser()
-    la.from_file(token_file)
-    la.input(data)
 
     try:
+        grammar = Grammar(grammar_text)
+        la = LexicalAnalyser()
         ll1_parser = LL1Parser(grammar)
+        sema = SemanticAnalyser(grammar)
+   
+        la.from_file(token_file)
+        la.input(data)
         while True:
             token = la.token()
             if (not (token is None)):
 
                 i = 0
-                while((i < 1000000000) and (1 < len(ll1_parser.stack))):
+                while((i < MAX) and (1 < len(ll1_parser.stack))):
                     (must_break, node) = ll1_parser.parse(token)
                     #node is current node being visited in parsing tree
-
-                    if(not must_break):
+                    if(node != None):
+                        sema.put(node)
+                    if(must_break):
                         break
 
                     i+=1
             else:
-                ll1_parser.parse(Token("$","$",0,0))
-                print("ACCEPTED")
+                while(len(ll1_parser.parents)>0):
+                    (must_break, node) = ll1_parser.parse()
+                    if(node != None):
+                            sema.put(node)
                 #ptree(ll1_parser.tree.children[0])
                 break #no more tokens
 
+        symbol_table = sema.get_symbol_table()
 
-    except LexicalException as e:
+        p_symbol_tables(symbol_table)
+
+        print("As expressões aritiméticas são válidas;")
+        print("Todo break está no escopo de um for;")
+        print("As expressões aritiméticas são válidas;")
+    except Exception as e:
         print(e)
 
 
